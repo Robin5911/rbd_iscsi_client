@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"rbd_iscsi_client/models"
+	"github.com/TonyZhang1989/rbd_iscsi_client/models"
 )
 type BasicAuth struct {
 	Username string
