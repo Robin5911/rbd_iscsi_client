@@ -12,8 +12,6 @@ type BasicAuth struct {
 	Password string
 }
 type RBDISCSIClient struct {
-	Username string
-	Password string
 	ApiUrl string
 	Timeout int
 	Secure bool
