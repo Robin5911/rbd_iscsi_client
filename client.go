@@ -89,7 +89,7 @@ func (rbdIscsiClient *RBDISCSIClient) CreateTargetIqn(targetIqn string,mode,cont
 	/*
 		Create a target iqn from the gateways
 	*/
-	apiUrl := fmt.Sprintf("/api/target/%ss", targetIqn)
+	apiUrl := fmt.Sprintf("%s/api/target/%s",rbdIscsiClient.ApiUrl, targetIqn)
 	payload := url.Values{}
 	if mode != nil {
 		payload.Add("mode",mode.(string))
@@ -118,7 +118,7 @@ func(rbdIscsiClient *RBDISCSIClient) DeleteTargetIqn(targetIqn string){
 	/*
 	Delete a target iqn from the gateways
 	 */
-	apiUrl := fmt.Sprintf("/api/target/%ss", targetIqn)
+	apiUrl := fmt.Sprintf("%s/api/target/%s",rbdIscsiClient.ApiUrl, targetIqn)
 	resp,httpCode,err := Request(apiUrl,"DELETE",nil,FormContentType,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil  {
 		log.Println("api resp err : ",err.Error())
@@ -134,7 +134,7 @@ func(rbdIscsiClient *RBDISCSIClient) GetClients(targetIqn string){
 	/*
 	List clients defined to the configuration
 	 */
-	apiUrl := fmt.Sprintf("/api/clients/%s", targetIqn)
+	apiUrl := fmt.Sprintf("%s/api/client/%s", rbdIscsiClient.ApiUrl,targetIqn)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil  {
 		log.Println("api resp err : ",err.Error())
@@ -150,7 +150,7 @@ func(rbdIscsiClient *RBDISCSIClient) GetClientInfo(targetIqn, clientIqn string){
 	/*
 	Fetch the Client information from the gateway
 	 */
-	apiUrl := fmt.Sprintf("/api/clientinfo/%s/%s", targetIqn, clientIqn)
+	apiUrl := fmt.Sprintf("%s/api/client/%s/%s", rbdIscsiClient.ApiUrl,targetIqn, clientIqn)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil  {
 		log.Println("api resp err : ",err.Error())
