@@ -3,9 +3,9 @@ package rbd_iscsi_client
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/TonyZhang1989/rbd_iscsi_client/models"
 	"log"
 	"net/url"
-	"github.com/TonyZhang1989/rbd_iscsi_client/models"
 )
 type BasicAuth struct {
 	Username string
@@ -84,6 +84,35 @@ func(rbdIscsiClient *RBDISCSIClient) GetTargetInfo(targetIqn string,mode,control
 	}
 	fmt.Println(string(resp))
 	return ""
+}
+func (rbdIscsiClient *RBDISCSIClient) CreateTargetIqn(targetIqn string,mode,controls interface{}) (models.GenericResp,int,error){
+	/*
+		Create a target iqn from the gateways
+	*/
+	apiUrl := fmt.Sprintf("/api/target/%ss", targetIqn)
+	payload := url.Values{}
+	if mode != nil {
+		payload.Add("mode",mode.(string))
+	}
+	if controls != nil {
+		payload.Add("controls",controls.(string))
+	}
+	resp,httpCode,err := Request(apiUrl,"PUT",payload,FormContentType,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
+	if err != nil  {
+		log.Println("api resp err : ",err.Error())
+		return models.GenericResp{},-1,err
+	}
+	if (httpCode%200) > 2 {
+		log.Println("api resp http code : ",httpCode)
+		return models.GenericResp{},httpCode,err
+	}
+	var genericResp models.GenericResp
+	err = json.Unmarshal(resp,&genericResp)
+	if err != nil {
+		log.Println("api resp err : ",err.Error())
+		return models.GenericResp{},httpCode,err
+	}
+	return genericResp,httpCode,nil
 }
 func(rbdIscsiClient *RBDISCSIClient) DeleteTargetIqn(targetIqn string){
 	/*
