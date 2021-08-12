@@ -45,7 +45,7 @@ func(rbdIscsiClient *RBDISCSIClient) GetSysInfo(t string) string{
 	/*
 	Get system info of <type>
 	 */
-	apiUrl := fmt.Sprintf("/api/sysinfo/%s",t)
+	apiUrl := fmt.Sprintf("%s/api/sysinfo/%s",rbdIscsiClient.ApiUrl,t)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil || (httpCode%200) > 2 {
 		fmt.Println(err)
@@ -54,7 +54,7 @@ func(rbdIscsiClient *RBDISCSIClient) GetSysInfo(t string) string{
 	return ""
 }
 func(rbdIscsiClient *RBDISCSIClient) GetGatewayinfo() interface{}{
-	apiUrl := fmt.Sprintf("/api/gatewayinfo")
+	apiUrl := fmt.Sprintf("%s/api/gatewayinfo",rbdIscsiClient.ApiUrl)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil || (httpCode%200) > 2 {
 		fmt.Println(err)
@@ -63,7 +63,7 @@ func(rbdIscsiClient *RBDISCSIClient) GetGatewayinfo() interface{}{
 	return ""
 }
 func(rbdIscsiClient *RBDISCSIClient) GetTargets() interface{}{
-	apiUrl := fmt.Sprintf("/api/targets")
+	apiUrl := fmt.Sprintf("%s/api/targets",rbdIscsiClient.ApiUrl)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil || (httpCode%200) > 2 {
 		fmt.Println(err)
@@ -71,19 +71,24 @@ func(rbdIscsiClient *RBDISCSIClient) GetTargets() interface{}{
 	fmt.Println(string(resp))
 	return ""
 }
-func(rbdIscsiClient *RBDISCSIClient) GetTargetInfo(targetIqn string,mode,controls interface{}) interface{}{
-	apiUrl := fmt.Sprintf("/api/targetinfo/%ss", targetIqn)
+func(rbdIscsiClient *RBDISCSIClient) GetTargetInfo(targetIqn string,mode,controls interface{}) (models.GenericResp,int,error){
+	apiUrl := fmt.Sprintf("%s/api/targetinfo/%s",rbdIscsiClient.ApiUrl, targetIqn)
 	resp,httpCode,err := Request(apiUrl,"GET",nil,nil,rbdIscsiClient.Auth,rbdIscsiClient.Timeout)
 	if err != nil  {
 		log.Println("api resp err : ",err.Error())
-		return err
+		return models.GenericResp{},-1,err
 	}
 	if (httpCode%200) > 2 {
 		log.Println("api resp http code : ",httpCode)
-		return err
+		return models.GenericResp{},httpCode,err
 	}
-	fmt.Println(string(resp))
-	return ""
+	var genericResp models.GenericResp
+	err = json.Unmarshal(resp,&genericResp)
+	if err != nil {
+		log.Println("api resp err : ",err.Error())
+		return models.GenericResp{},httpCode,err
+	}
+	return genericResp,httpCode,nil
 }
 func (rbdIscsiClient *RBDISCSIClient) CreateTargetIqn(targetIqn string,mode,controls interface{}) (models.GenericResp,int,error){
 	/*
