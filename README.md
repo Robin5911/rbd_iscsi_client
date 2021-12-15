@@ -1,7 +1,5 @@
 # rbd-iscsi-client (golang)
-This is a REST client that talks to ceph-iscsi's rbd-target-api to export rbd images/volumes to an iSCSI initiator, refer to python rbd-iscsi-client
-# Overview
-This go package is a client that talks to the ceph-iscsi rbd-target-api or spdk iSCSI target api. rbd-target-api coordinates the rbd volume exports via iSCSI
+基于 python rbd-iscsi-client 实现的go版本的 ， 用于请求操作 ceph-iscsi's rbd-target-api或 spdk iscsi target
 # Installation
 ```
 go get github.com/TonyZhang1989/rbd_iscsi_client
