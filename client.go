@@ -3,7 +3,7 @@ package rbd_iscsi_client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/TonyZhang1989/rbd_iscsi_client/models"
+	"github.com/Robin5911/rbd_iscsi_client/models"
 	"log"
 	"net/url"
 )
